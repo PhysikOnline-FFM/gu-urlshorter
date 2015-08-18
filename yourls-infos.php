@@ -204,12 +204,16 @@ if( yourls_do_log_redirect() ) {
 
 yourls_html_head( 'infos', yourls_s( 'Statistics for %s', YOURLS_SITE.'/'.$keyword ) );
 yourls_html_logo();
-yourls_html_menu();
+//yourls_html_menu();
 ?>
 
-<h2 id="informations"><?php echo yourls_esc_html( $title ); ?></h2>
+<div class="panel panel-teaser">
+<div class="panel-header">
+	<h2 id="informations"><?php echo yourls_esc_html( $title ); ?></h2>
+</div>
+<div class="panel-body">
 
-<h3><span class="label"><?php yourls_e( 'Short URL'); ?>:</span> <img src="<?php yourls_favicon() ?>"/>
+<h3><span class="label"><?php yourls_e( 'Short URL'); ?>:</span> <img src="<?php print yourls_favicon(); ?>"/>
 <?php if( $aggregate ) {
 	$i = 0;
 	foreach( $keyword_list as $k ) {
@@ -233,11 +237,11 @@ yourls_html_menu();
 	<div class="wrap_unfloat">
 	<ul id="headers" class="toggle_display stat_tab">
 		<?php if( yourls_do_log_redirect() ) { ?>
-		<li class="selected"><a href="#stat_tab_stats"><h2><?php yourls_e( 'Traffic statistics'); ?></h2></a></li>
-		<li><a href="#stat_tab_location"><h2><?php yourls_e( 'Traffic location'); ?></h2></a></li>
-		<li><a href="#stat_tab_sources"><h2><?php yourls_e( 'Traffic sources'); ?></h2></a></li>
+		<li class="selected"><a href="#stat_tab_stats"><strong><?php yourls_e( 'Traffic statistics'); ?></strong></a></li>
+		<li><a href="#stat_tab_location"><strong><?php yourls_e( 'Traffic location'); ?></strong></a></li>
+		<li><a href="#stat_tab_sources"><strong><?php yourls_e( 'Traffic sources'); ?></strong></a></li>
 		<?php } ?>
-		<li><a href="#stat_tab_share"><h2><?php yourls_e( 'Share'); ?></h2></a></li>
+		<li><a href="#stat_tab_share"><strong><?php yourls_e( 'Share'); ?></strong></a></li>
 	</ul>
 	</div>
 
@@ -532,6 +536,8 @@ yourls_html_menu();
 		} ?>
 			
 	</div>
+</div><!--/panel-body -->
+</div><!--/panel -->
 
 <?php } // endif do log redirect ?>
 
