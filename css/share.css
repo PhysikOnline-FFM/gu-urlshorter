@@ -24,6 +24,7 @@ div.share {
 	overflow:hidden;
 	vertical-align:-2px;
 }
+/*
 #copybox {
 	width:250px;
 }
@@ -36,6 +37,7 @@ div.share {
 	height:4em;
 	font-size:12px;
 }
+*/
 #charcount {
 	padding-left:5px;
 	color:#88c0eb;
@@ -53,7 +55,7 @@ div.share {
 #share_tw {background:transparent url(../images/twitter.png) left center no-repeat;}
 #share_fb {background:transparent url(../images/facebook.png) left center no-repeat;}
 
-#copylink{
+/*#copylink{
 	cursor:pointer;
 	background:transparent url(../images/copy.png) 130% center no-repeat;
 }
@@ -61,4 +63,4 @@ div.share {
 #copylink:hover, #copylink.hover {
 	background-position:100% 50%;
 }
-
+*/
