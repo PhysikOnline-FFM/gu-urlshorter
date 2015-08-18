@@ -7,10 +7,39 @@
 function yourls_html_logo() {
 	yourls_do_action( 'pre_html_logo' );
 	?>
+	<!-- try the goethe banner here -->
+
+	<div id="header">
+		<div class="brands-column">
+			<a class="logo" title="Homepage of Kurzlinkservice at Goethe-Universität Frankfurt am Main" href="/">
+				<img height="76" src="/customizing/uni_head_official-colorinverted.svg" alt="Goethe-Universität Frankfurt am Main">
+			</a>
+
+			<h1 class="department">
+				<span class="departmentTitle"><a href="/infos" title="Infos">Kurzlink-Service</a></span><br>
+				<span class="departmentName"><a href="/"><?php echo $_SERVER['SERVER_NAME']; ?></a></span>
+			</h1>
+
+		</div>
+		<div class="sidebar-column">
+			<div id="sidebar-header">
+				<ul class="nav nav-onetab">
+					<li><a href="/"><i class="fa fa-link"></i> New</a></li>
+					<li><a href="/infos"><i class="fa fa-info-circle"></i> Infos</a></li>
+					<li><a href="/credits"><i class="fa fa-comment-o"></i> Credits</a></li>
+				</ul>
+			</div>
+		</div>
+	</div><!--/header-->
+	<!--SIC: Start main column content -->
+	<div id="content">
+
+<!--
 	<h1>
 		<a href="<?php echo yourls_admin_url( 'index.php' ) ?>" title="YOURLS"><span>YOURLS</span>: <span>Y</span>our <span>O</span>wn <span>URL</span> <span>S</span>hortener<br/>
 		<img src="<?php yourls_site_url(); ?>/images/yourls-logo.png" alt="YOURLS" title="YOURLS" border="0" style="border: 0px;" /></a>
 	</h1>
+-->
 	<?php
 	yourls_do_action( 'html_logo' );
 }
@@ -38,6 +67,7 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 			$share = $insert = $tablesorter = true;
 			break;
 			
+		case 'public-submitted':
 		case 'index':
 			$insert = $tablesorter = $cal = $share = true;
 			break;
@@ -73,7 +103,7 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 	$bodyclass .= ( yourls_is_mobile_device() ? 'mobile' : 'desktop' );
 	
 	// Page title
-	$_title = 'YOURLS &mdash; Your Own URL Shortener | ' . yourls_link();
+	$_title = 'Goethe Universität Link-Shortener'; // | ' . yourls_link();
 	$title = $title ? $title . " &laquo; " . $_title : $_title;
 	$title = yourls_apply_filter( 'html_title', $title, $context );
 	
@@ -81,11 +111,17 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 <!DOCTYPE html>
 <html <?php yourls_html_language_attributes(); ?>>
 <head>
+	<!-- YOURLS GU branding by SK -->
 	<title><?php echo $title ?></title>
 	<link rel="shortcut icon" href="<?php yourls_favicon(); ?>" />
 	<meta http-equiv="Content-Type" content="<?php echo yourls_apply_filters( 'html_head_meta_content-type', 'text/html; charset=utf-8' ); ?>" />
 	<meta http-equiv="X-UA-Compatible" content="IE-9"/>
-	<meta name="author" content="Ozh RICHARD & Lester CHAN for http://yourls.org/" />
+
+	<!-- Goethe Layout: https://github.com/svenk/goetheuni-layout -->
+	<link type="text/css" href="/customizing/goetheuni-layout/dist/goetheuni-layout.min.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="author" content="Yourls and the Goethe University YOURLS team" />
 	<meta name="generator" content="YOURLS <?php echo YOURLS_VERSION ?>" />
 	<meta name="description" content="Insert URL &laquo; YOURLS &raquo; Your Own URL Shortener' | <?php yourls_site_url(); ?>" />
 	<script src="<?php yourls_site_url(); ?>/js/jquery-1.9.1.min.js?v=<?php echo YOURLS_VERSION; ?>" type="text/javascript"></script>
@@ -128,7 +164,7 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 	<?php yourls_do_action( 'html_head', $context ); ?>
 </head>
 <body class="<?php echo $context; ?> <?php echo $bodyclass; ?>">
-<div id="wrap">
+<div id="page">
 	<?php
 }
 
@@ -141,22 +177,30 @@ function yourls_html_footer() {
 	
 	$num_queries = sprintf( yourls_n( '1 query', '%s queries', $ydb->num_queries ), $ydb->num_queries );
 	?>
-	</div> <?php // wrap ?>
-	<div id="footer"><p>
-		<?php
-		$footer  = yourls_s( 'Powered by %s', '<a href="http://yourls.org/" title="YOURLS">YOURLS</a> v ' . YOURLS_VERSION );
-		$footer .= ' &ndash; '.$num_queries;
-		echo yourls_apply_filters( 'html_footer_text', $footer );
-		?>
-	</p></div>
-	<?php if( defined( 'YOURLS_DEBUG' ) && YOURLS_DEBUG == true ) {
-		echo '<div style="text-align:left"><pre>';
-		echo join( "\n", $ydb->debug_log );
-		echo '</div>';
-	} ?>
-	<?php yourls_do_action( 'html_footer', $ydb->context ); ?>
-	</body>
-	</html>
+	</div><!-- /#content -->
+	<div id="footer" style="padding-bottom:1px">
+		<section class="band">
+			<div class="pull-right">
+				<a href="/infos">Über diese Seite</a>
+			 	| 		<?php
+					$footer  = yourls_s( 'Powered by %s', '<a href="http://yourls.org/" title="YOURLS">YOURLS</a>');
+					$footer .= ', with '.$num_queries;
+					echo yourls_apply_filters( 'html_footer_text', $footer );
+					?>
+				| <a href="<?php print yourls_admin_url( 'index.php' ); ?>">Admin</a>
+			</div>
+			<a href="http://www.uni-frankfurt.de/">Die Goethe-Universität Frankfurt am Main</a>
+		</section>
+		&nbsp; <!-- place for more content -->
+
+		<?php yourls_do_action( 'html_footer', $ydb->context ); ?>
+	<?php
+	 # do not put these here so we can put additional text in the footer after function invocation
+	 # </div>
+	 # </div><!-- /#page -->
+	 # </body>
+	 # </html>
+	?>
 	<?php
 }
 
@@ -378,43 +422,56 @@ function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlin
 	$_url   = rawurlencode( $shorturl );
 	?>
 	
-	<div id="shareboxes" <?php echo $hidden; ?>>
+	<!-- This is somewhat pointless -->
+	<!-- <div id="shareboxes" <?php echo $hidden; ?>> -->
 
 		<?php yourls_do_action( 'shareboxes_before', $longurl, $shorturl, $title, $text ); ?>
 
-		<div id="copybox" class="share">
-		<?php echo $shortlink_title; ?>
-			<p><input id="copylink" class="text" size="32" value="<?php echo yourls_esc_url( $shorturl ); ?>" /></p>
-			<p><small><?php yourls_e( 'Long link' ); ?>: <a id="origlink" href="<?php echo yourls_esc_url( $longurl ); ?>"><?php echo yourls_esc_url( $longurl ); ?></a></small>
-			<?php if( yourls_do_log_redirect() ) { ?>
-			<br/><small><?php yourls_e( 'Stats' ); ?>: <a id="statlink" href="<?php echo yourls_esc_url( $shorturl ); ?>+"><?php echo yourls_esc_url( $shorturl ); ?>+</a></small>
-			<input type="hidden" id="titlelink" value="<?php echo yourls_esc_attr( $title ); ?>" />
-			<?php } ?>
-			</p>
+		<div class="main-column">
+		<div id="copybox" class="panel panel-regular">
+			<div class="panel-header">
+				<?php echo $shortlink_title; ?>
+			</div>
+			<div class="panel-body">
+				<p><input id="copylink" class="form-control input-lg" value="<?php echo yourls_esc_url( $shorturl ); ?>" /></p>
+				<p><?php yourls_e( 'Long link' ); ?>: <a id="origlink" href="<?php echo yourls_esc_url( $longurl ); ?>"><?php echo yourls_esc_url( $longurl ); ?></a>
+				<?php if( yourls_do_log_redirect() ) { ?>
+				<br/><?php yourls_e( 'Stats' ); ?>: <a id="statlink" href="<?php echo yourls_esc_url( $shorturl ); ?>+"><?php echo yourls_esc_url( $shorturl ); ?>+</a>
+				<input type="hidden" id="titlelink" value="<?php echo yourls_esc_attr( $title ); ?>" />
+				<?php } ?>
+				</p>
+			</div>
 		</div>
 
 		<?php yourls_do_action( 'shareboxes_middle', $longurl, $shorturl, $title, $text ); ?>
+		</div><!-- /.main-column -->
 
-		<div id="sharebox" class="share">
-			<?php echo $share_title; ?>
-			<div id="tweet">
-				<span id="charcount" class="hide-if-no-js"><?php echo $count; ?></span>
-				<textarea id="tweet_body"><?php echo $share; ?></textarea>
+		<div class="sidebar-column">
+			<div class="panel panel-sidebar">
+				<?php echo $share_title; /* is h2 */ ?>
+				<div class="panel-body">
+					<span class="caret"></span>
+
+					<div id="tweet">
+						<!--<span id="charcount" class="hide-if-no-js"><?php echo $count; ?></span>-->
+						<textarea id="tweet_body" class="form-control" rows="5"><?php echo $share; ?></textarea>
+					</div>
+					<p id="share_links"><?php yourls_e( 'Share with' ); ?> 
+						<a id="share_tw" href="http://twitter.com/home?status=<?php echo $_share; ?>" title="<?php yourls_e( 'Tweet this!' ); ?>" onclick="share('tw');return false">Twitter</a>
+						<a id="share_fb" href="http://www.facebook.com/share.php?u=<?php echo $_url; ?>" title="<?php yourls_e( 'Share on Facebook' ); ?>" onclick="share('fb');return false;">Facebook</a>
+						<a id="share_ff" href="http://friendfeed.com/share/bookmarklet/frame#title=<?php echo $_share; ?>" title="<?php yourls_e( 'Share on Friendfeed' ); ?>" onclick="share('ff');return false;">FriendFeed</a>
+						<?php
+						yourls_do_action( 'share_links', $longurl, $shorturl, $title, $text );
+						// Note: on the main admin page, there are no parameters passed to the sharebox when it's drawn.
+						?>
+					</p>
+				</div>
 			</div>
-			<p id="share_links"><?php yourls_e( 'Share with' ); ?> 
-				<a id="share_tw" href="http://twitter.com/home?status=<?php echo $_share; ?>" title="<?php yourls_e( 'Tweet this!' ); ?>" onclick="share('tw');return false">Twitter</a>
-				<a id="share_fb" href="http://www.facebook.com/share.php?u=<?php echo $_url; ?>" title="<?php yourls_e( 'Share on Facebook' ); ?>" onclick="share('fb');return false;">Facebook</a>
-				<a id="share_ff" href="http://friendfeed.com/share/bookmarklet/frame#title=<?php echo $_share; ?>" title="<?php yourls_e( 'Share on Friendfeed' ); ?>" onclick="share('ff');return false;">FriendFeed</a>
-				<?php
-				yourls_do_action( 'share_links', $longurl, $shorturl, $title, $text );
-				// Note: on the main admin page, there are no parameters passed to the sharebox when it's drawn.
-				?>
-			</p>
-		</div>
+		</div><!-- /.sidebar-column -->
 		
 		<?php yourls_do_action( 'shareboxes_after', $longurl, $shorturl, $title, $text ); ?>
 	
-	</div>
+	<!-- </div> /#shareboxes -->
 	
 	<?php
 }
