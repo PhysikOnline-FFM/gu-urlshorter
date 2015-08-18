@@ -6,4 +6,3 @@ Disallow: /includes
 Disallow: /js
 Disallow: /pages
 Disallow: /user
-
