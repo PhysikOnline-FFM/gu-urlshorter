@@ -1,0 +1,3 @@
+[submodule "customizing/goetheuni-layout"]
+	path = customizing/goetheuni-layout
+	url = https://github.com/svenk/goetheuni-layout.git
