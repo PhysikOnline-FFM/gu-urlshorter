@@ -3,19 +3,24 @@
 ############
 
 # Configuration
-user/*
-!user/config-sample.php
-.htaccess
-*.config
-*.conf
-[Rr]obots.txt
+# -> gushorter: we want configuration
+#user/*
+# we do not want the secret configuration:
+user/config.php
+# we want htaccess:
+#.htaccess
+#*.config
+#*.conf
+# we want robots
+#[Rr]obots.txt
 
 # Languages
 user/languages/*
 !user/languages/
 
 # Plugins
-user/plugins/*
+# -> gushorter: We want plugins
+#user/plugins/*
 # Core plugins
 !user/plugins/hyphens-in-urls/
 !user/plugins/random-bg/
@@ -24,12 +29,12 @@ user/plugins/*
 !user/plugins/sample-toolbar/
 
 # Pages
-pages/*
-!pages/examplepage.php
+#pages/*
+#!pages/examplepage.php
 
 # Keep index.html
-!user/index.html
-!user/*/index.html
+#!user/index.html
+#!user/*/index.html
 
 ############
 ## Environnement
@@ -43,3 +48,6 @@ Desktop.ini
 
 # Mac crap
 .DS_Store
+
+# backup crap
+*~
