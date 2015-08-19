@@ -45,7 +45,7 @@ $ozh_random_keyword['type'] = '1';
 yourls_add_filter( 'random_keyword', 'ozh_random_keyword' );
 function ozh_random_keyword() {
         global $ozh_random_keyword;
-        return yourls_rnd_string( $ozh_random_keyword['length'], $osz_random_keyword['type'] );
+        return yourls_rnd_string( $ozh_random_keyword['length'], $ozh_random_keyword['type'] );
 }
 
 // Don't increment sequential keyword tracker
