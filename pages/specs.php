@@ -50,7 +50,7 @@ yourls_html_logo();
 					<dd><?php echo $_SERVER['SERVER_SOFTWARE']; ?></dd>
 
 					<dt>Username des Prozesses</dt>
-					<dd><?php echo get_current_user(); ?></dd>
+					<dd><?php echo `whoami`; ?></dd>
 				</dl>
 			</div></div>
 		</div>
