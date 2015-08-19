@@ -18,7 +18,7 @@
  ** If you define it to "http://site.com", don't use "http://www.site.com" in your browser (and vice-versa) */
 
 // TODO: Possibly install the allow-aliases plugin: https://code.google.com/p/yourls-allow-aliases/source/browse/trunk/allow-aliases/plugin.php
-define( 'YOURLS_SITE', 'http://shorten.physikelearning.de' );
+define( 'YOURLS_SITE', 'http://'.$_SERVER['HTTP_HOST'] );
 
 /** Timezone GMT offset */
 define( 'YOURLS_HOURS_OFFSET', +1 ); 
@@ -95,7 +95,13 @@ define( 'YOURLS_DEBUG', false );
  */
 
 /** URL shortening method: 36 or 62 */
-define( 'YOURLS_URL_CONVERT', 36 );
+define( 'YOURLS_URL_CONVERT', 62 );
+
+// Base36: 0123456789abcdefghijklmnopqrstuvwxyz
+// Base62: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+// that is, Base 62 allows upper case letters
+
+
 /*
  * 36: generates all lowercase keywords (ie: 13jkm)
  * 62: generates mixed case keywords (ie: 13jKm or 13JKm)
