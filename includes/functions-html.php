@@ -17,7 +17,7 @@ function yourls_html_logo() {
 
 			<h1 class="department">
 				<span class="departmentTitle"><a href="/infos" title="Infos">Kurzlink-Service</a></span><br>
-				<span class="departmentName"><a href="/"><?php echo $_SERVER['SERVER_NAME']; ?></a></span>
+				<span class="departmentName"><a href="/"><?php echo $_SERVER['HTTP_HOST']; ?></a></span>
 			</h1>
 
 		</div>

@@ -15,6 +15,14 @@ Author URI: http://ozh.org/
 * Fixed: plugin now complies to character set defined in config.php
 */
 
+/*
+ * Known BUGS (by Sven):
+ * The random keywords are not checked for collision in this plugin.
+ * There should be a good collision avoidance algorithm by just incrementing
+ * $osz_random_keyword['length'] by one when a collision takes place.
+ */
+
+
 global $ozh_random_keyword;
 
 /*
@@ -25,14 +33,19 @@ global $ozh_random_keyword;
 $ozh_random_keyword['length'] = 4; # was 5
 
 /*
-* DO NOT EDIT FARTHER
-*/
+ * yourls_rnd_string $types:
+ * '0' = yourls_get_shorturl_charset(), derzeit Base62 = Lower+Uppercase
+ * '1' = only lowercase, no vowels, no confusion with 0/o, 1/l
+ * etc.
+ * I think we stick to '1' which gives friendly random keys.
+ */
+$ozh_random_keyword['type'] = '1';
 
 // Generate a random keyword
 yourls_add_filter( 'random_keyword', 'ozh_random_keyword' );
 function ozh_random_keyword() {
         global $ozh_random_keyword;
-        return yourls_rnd_string( $ozh_random_keyword['length'] );
+        return yourls_rnd_string( $ozh_random_keyword['length'], $osz_random_keyword['type'] );
 }
 
 // Don't increment sequential keyword tracker
