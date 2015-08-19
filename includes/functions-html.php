@@ -24,9 +24,9 @@ function yourls_html_logo() {
 		<div class="sidebar-column">
 			<div id="sidebar-header">
 				<ul class="nav nav-onetab">
-					<li><a href="/"><i class="fa fa-link"></i> New</a></li>
-					<li><a href="/infos"><i class="fa fa-info-circle"></i> Infos</a></li>
-					<li><a href="/credits"><i class="fa fa-comment-o"></i> Credits</a></li>
+					<li><a href="/"><i class="fa fa-link"></i>Kürzen!</a></li>
+					<li><a href="/infos"><i class="fa fa-info-circle"></i>Informationen</a></li>
+					<li><a href="/credits"><i class="fa fa-comment-o"></i>Über uns</a></li>
 				</ul>
 			</div>
 		</div>
