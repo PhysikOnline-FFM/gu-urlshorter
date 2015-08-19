@@ -11,7 +11,7 @@ if( !defined( 'YOURLS_ABSPATH' ) ) {
 // Display page content. Any PHP, HTML and YOURLS function can go here.
 $url = YOURLS_SITE . '/infos';
 
-yourls_html_head( 'infos', 'Infos about YOURLS an der Uni Frankfurt' );
+yourls_html_head( 'infos', 'Informationen über YOURLS an der Goethe-Universität' );
 yourls_html_logo();
 
 ?>
