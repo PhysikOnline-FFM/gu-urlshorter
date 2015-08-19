@@ -57,7 +57,7 @@ yourls_html_logo();
 		</div>
 		<div class="col-md-6">
 			<div class="panel panel-box"><div class="panel-body">
-				<h3>API (kommend)</h3>
+				<h3>API (geplant)</h3>
 
 				<p>Zur automatischen Erstellung von Kurzlinks etwa aus
 				universitären Websystemen heraus steht die <a href="http://yourls.org/#API">YOURLS-API</a>
