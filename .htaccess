@@ -7,6 +7,11 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^.*$ /yourls-loader.php [L]
+
+# Rewrite any subdomain request to a non-subdomain request to keep the URL short
+RewriteCond %{HTTP_HOST} ^[^.]+\.(tinygu\.de)$ [NC]
+RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L,NE]
+
 </IfModule>
 # END YOURLS
 
