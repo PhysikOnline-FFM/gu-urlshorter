@@ -20,7 +20,7 @@ if($formSubmitted) {
 
 	// Create short URL, receive array $return with various information
 	$return  = yourls_add_new_link( $url, $keyword, $title );
-	
+
 	$shorturl = isset( $return['shorturl'] ) ? $return['shorturl'] : '';
 	$message  = isset( $return['message'] ) ? $return['message'] : '';
 	$title    = isset( $return['title'] ) ? $return['title'] : '';
@@ -28,14 +28,14 @@ if($formSubmitted) {
 	$status   = isset( $return['status'] ) ? $return['status'] : '';
 	/* code is something like 'error:whatever ...  */
 	$code     = isset( $return['code'] ) ? $return['code'] : '';
-	
+
 	// Stop here if bookmarklet with a JSON callback function ("instant" bookmarklets)
 	if( isset( $_GET['jsonp'] ) && $_GET['jsonp'] == 'yourls' ) {
 		$short = $return['shorturl'] ? $return['shorturl'] : '';
 		$message = "Short URL (Ctrl+C to copy)";
 		header('Content-type: application/json');
 		echo yourls_apply_filter( 'bookmarklet_jsonp', "yourls_callback({'short_url':'$short','message':'$message'});" );
-		
+
 		die();
 	}
 }
@@ -50,7 +50,7 @@ if($formSubmitted) {
 		# find die irgendwie nicht so genial, diese Box
 		yourls_share_box( $url, $shorturl, $title, $text );
 
-		// TBD: Durch irgendwas sinnvolleres ersetzen, vgl. tini.io	
+		// TBD: Durch irgendwas sinnvolleres ersetzen, vgl. tini.io
 	} else {
 		// $status == 'fail' will be the case
 
@@ -61,7 +61,7 @@ if($formSubmitted) {
 			'error:db' => 'Die Datenbank ist böse.',
 			'error:nourl' => 'Keine gültige Adresse angegeben!',
 			'error:url' => 'Diese Adresse haben wir bereits gekürzt!',
-			'error:whitelist' =>  'Nur Adressen mit Bezug zur Uni Frankfurt erlaubt!',
+			'error:whitelist' =>  'Nur Adressen mit Bezug zur Goethe-Universität erlaubt!',
 		);
 
 		?>

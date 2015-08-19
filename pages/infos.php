@@ -98,7 +98,7 @@ yourls_html_logo();
 			<a href="http://yourls.org"><img src="/images/yourls-logo.png" style="max-width: 100%"></a>
 			<p>Dieser Dienst nutzt die etablierte Open-Source-Software <a href="http://yourls.org">YOURLS</a>
 			mit einigen Modifikationen, die die im Text genannten Regeln sicherstellen. Der <a href="https://github.com/PhysikOnline-FFM/gu-urlshorter">Quellcode dieser
-			Anwendung</a> ist ebenfalls Open-Source und wird auf Github gemeinsam entwickelt. Wir freuen uns
+			Anwendung</a> ist ebenfalls Open-Source und wird auf GitHub gemeinsam entwickelt. Wir freuen uns
 			über <a href="https://gitreports.com/issue/PhysikOnline-FFM/gu-urlshorter">Feedback, Problemberichte
 			oder Erfolgsmeldungen</a>.
 		</div>
