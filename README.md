@@ -1,40 +1,23 @@
-![yourls](images/yourls-logo.png)
-[YOURLS](http://yourls.org) — [![Build Status](https://travis-ci.org/YOURLS/YOURLS.png?branch=master)](https://travis-ci.org/YOURLS/YOURLS)
-========
-**YOURLS** is a set of PHP scripts that will allow you to run Your Own URL Shortener. You'll have full control over your data, detailed stats and analytics, plugins, and more. It's free.
+Der Goethe-Universität Kurz-URL-Dienst
+======================================
 
-Quick Start
------------
-To get started, check [yourls.org](http://yourls.org)!  
-Learn more tweaks in the [Wiki documentation](https://github.com/YOURLS/YOURLS/wiki/).
+Dieses Repository beinhaltet den Code für den Kurz-URL-Dienst an der Goethe-Universität (Frankfurt am Main). Die Software basiert auf [YOURLS](http://yourls.org) (*Your Own URL Shortener*). Für eine ausführliche Readme-File zur YOURLS-Codebase siehe die [README](https://github.com/YOURLS/YOURLS/blob/master/README.md) im [YOURLS-Repository](https://github.com/YOURLS/YOURLS).
 
-News
-----
-Keep track of development and community news.
+Unsere Version von YOURLS wurde im August 2015 gestartet und basiert auf [YOURLS 1.7](https://github.com/YOURLS/YOURLS/releases/tag/1.7).
 
-* Follow [@yourls on Twitter](http://twitter.com/yourls).
-* Read and subscribe to the [The Official YOURLS Blog](http://blog.yourls.org).
-* Check [commit messages](https://github.com/YOURLS/YOURLS/commits/master).
+Benutzen
+--------
 
-Versioning
-----------
-For transparency and insight into our release cycle, and for striving to maintain backward compatibility, YOURLS will be maintained under the [Semantic Versioning](http://semver.org) guidelines as much as possible.
+Diese Software ist bewusst so geschrieben, dass eine einzelne Installation unter mehreren Adressen gleichzeitig benutzt werden kann. An dieser Stelle sei **http://tinygu.de** erwähnt. Dies ist für den Anwender sicher die interessanteste Adresse, um Links zu kürzen.
 
-Releases will be numbered with the following format: `<major>.<minor>.<patch>`
+Weitere Informationen, wo wir diese Software installiert haben und hosten, gibt es im [PhysikOnline Teamtracker](https://elearning.physik.uni-frankfurt.de/projekt/) unter [Allgemein/URL-Shortener](https://elearning.physik.uni-frankfurt.de/projekt/wiki/Allgemein/URL-Shortener). Ausführliche Informationen finden sich auch in den Dateien im [pages](https://github.com/PhysikOnline-FFM/gu-urlshorter/tree/master/pages)-Verzeichnis, etwa http://tinygu.de/infos, http://tinygu.de/credits sowie http://tinygu.de/specs.
 
-And constructed with the following guidelines:
-* Breaking backward compatibility bumps the major (and resets the minor and patch)
-* New additions without breaking backward compatibility bumps the minor (and resets the patch)
-* Bug fixes and misc changes bumps the patch
+Mitmachen
+---------
 
-*[Release Archive](https://github.com/YOURLS/YOURLS/releases)*
+Mitarbeit durch Studenten und Interessierte wird ausdrücklich gewünscht. Wir haben einen öffentlichen [Issue/Bug-Tracker](https://github.com/PhysikOnline-FFM/gu-urlshorter/issues), auf dem technische wie gleichermaßen inhaltiche Probleme diskutiert werden. Zum Posten wird ein [Github-Account benötigt](https://github.com/join). Über den Dienst [GitReports](https://gitreports.com/) ist es aber auch möglich, anonym bzw. ohne Login auf Github [Feedback zu senden](https://gitreports.com/issue/PhysikOnline-FFM/gu-urlshorter).
 
-Bug Tracker
------------
-Have a bug or a feature request? [Please open a new issue](https://github.com/YOURLS/YOURLS/issues).  
-__Before opening any issue, please search for existing issues and read the [Issue Guidelines](https://github.com/YOURLS/YOURLS/wiki/Bug-Report).__
 
-License
--------
-Free software. Do whatever the hell you want with it.  
-The [license](LICENSE.md) under which YOURLS is released is the MIT license.
+Lizenz
+------
+Dies ist freie Software gemäß der MIT-Lizenz. Siehe [license](LICENSE.md) für Details. Mit dieser Lizenz benutzen wir die gleiche Lizenz wie YOURLS selber.
