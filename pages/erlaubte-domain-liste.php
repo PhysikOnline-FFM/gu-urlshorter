@@ -26,7 +26,7 @@ yourls_html_logo();
 			<dl class="dl">
 				<?php
 					global $allowed_domains;
-					foreach($allowed_domains as $d) {	
+					foreach($allowed_domains as $d) {
 						echo "<dt><a href='http://${d['domain']}' title='Mal ausprobieren, was da kommt'>${d['domain']}</a></dt><dd>${d['desc']}</dd>\n";
 					}
 				?>
@@ -48,7 +48,7 @@ yourls_html_logo();
 		<div class="panel-body">
 			<span class="caret"></span>
 
-			Wenn Sie der Meinung sind, dass eine Domain fehlt, dann <a href="/credshits">kontaktieren Sie uns</a>.
+			Wenn Sie der Meinung sind, dass eine Domain fehlt, dann <a href="/credits">kontaktieren Sie uns</a>.
 			Wir fügen diese Domain hinzu, wenn sie unseren Richtlinien entspricht.
 		</div>
 	</div>
