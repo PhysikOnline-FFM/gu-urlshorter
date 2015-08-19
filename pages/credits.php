@@ -33,7 +33,11 @@ yourls_html_logo();
 			bestärkt. Betrieben wird dieser Dienst durch das
 			<a href="http://elearning.physik.uni-frankfurt.de/projekt">eLearning-Projekt des Fachbereichs Physik</a>.
 			Das technische Hosting wird durch das <a href="http://pokal.uni-frankfurt.de">POKAL-Einsatzteam</a>
-			des Instituts für theoretische Physik sichergestellt.	
+			des Instituts für theoretische Physik sichergestellt.
+
+			<?php $stats = yourls_get_db_stats(); ?>
+			<p>Dieser Dienst speichert bereits <strong><?php echo $stats['total_links']; ?> gekürzte URLs</strong>.
+			Weitere <a href="/specs">technische Details</a> sind öffentlich einsehbar.</p>
 		</div>
 	</div>
 
@@ -51,14 +55,17 @@ yourls_html_logo();
 		<div class="col-md-6">
 			<div class="panel panel-box"><div class="panel-body">
 				<h3>Mitmachen</h3>
+				<a href="https://github.com/PhysikOnline-FFM/gu-urlshorter/"><img src="https://assets-cdn.github.com/images/modules/logos_page/Octocat.png" style="width:100px" class="pull-right"></a>
 
 				<p>Wir suchen jederzeit Unterstützer, die sich für die frische Ideen
 				und Konzepte innerhalb der Goethe-Universität begeistern können. Wenn Sie die Idee
 				des KurzURL-Dienstes mögen und gerne zu seiner Sicherung beitragen möchten, weitere
 				Kurz-Domains zur Verfügung stellen möchten oder vorschlagen möchten oder vielleicht
 				sogar eine Abspaltung betreiben möchten, steht Ihnen das jederzeit zur Verfügung.
-				Sie können den Quellcode dieses Programmes einsehen (<a href="/infos">mehr Infos</a>)
-				und auch nach Belieben <a href="https://de.wikipedia.org/wiki/Abspaltung_%28Softwareentwicklung%29">forken</a>.
+				Sie können den <a href="https://github.com/PhysikOnline-FFM/gu-urlshorter/">Quellcode dieses Programmes auf Github</a>
+				einsehen und auch nach Belieben <a href="https://de.wikipedia.org/wiki/Abspaltung_%28Softwareentwicklung%29">forken</a>.
+				Wir freuen uns auch über <a href="https://github.com/PhysikOnline-FFM/gu-urlshorter/pulls?q=is%3Apr">Pull-Requests</a> und
+				<a href="https://github.com/PhysikOnline-FFM/gu-urlshorter/issues?q=is%3Aissue">Diskussionsbeiträge</a>.
 			</div></div>
 		</div>
 	</div>

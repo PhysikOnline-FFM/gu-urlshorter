@@ -181,10 +181,10 @@ function yourls_html_footer() {
 	<div id="footer" style="padding-bottom:1px">
 		<section class="band">
 			<div class="pull-right">
-				<a href="/infos">Über diese Seite</a>
+				<a href="https://gitreports.com/issue/PhysikOnline-FFM/gu-urlshorter">Problem berichten</a>
+				| <a href="/infos">Über diese Seite</a>
 			 	| 		<?php
-					$footer  = yourls_s( 'Powered by %s', '<a href="http://yourls.org/" title="YOURLS">YOURLS</a>');
-					$footer .= ', with '.$num_queries;
+					$footer = "<a href='/specs' title='Powered by YOURLS, with $num_queries Datenbankabfragen'>Technik</a>";
 					echo yourls_apply_filters( 'html_footer_text', $footer );
 					?>
 				| <a href="<?php print yourls_admin_url( 'index.php' ); ?>">Admin</a>
