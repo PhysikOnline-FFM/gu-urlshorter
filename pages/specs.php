@@ -88,8 +88,8 @@ yourls_html_logo();
 
 				<dl>
 					<dt>Aktueller HEAD-Commit</dt>
-					<dd style="font-family:monospace; overflow-x: scroll">
-						<?php $head = shell_exec('git rev-parse --verify HEAD 2>&1');
+					<dd style="font-family:monospace;">
+						<?php $head = shell_exec('git rev-parse --short --verify HEAD 2>&1');
 						echo "<a href='https://github.com/PhysikOnline-FFM/gu-urlshorter/commit/$head'>$head</a>"; ?></dd>
 
 					<dt>Aktueller Branch</dt>
