@@ -21,14 +21,14 @@
 define( 'YOURLS_SITE', 'http://'.$_SERVER['HTTP_HOST'] );
 
 /** Timezone GMT offset */
-define( 'YOURLS_HOURS_OFFSET', +1 ); 
+define( 'YOURLS_HOURS_OFFSET', +1 );
 
 /** YOURLS language or "locale".
  ** Change this setting to "localize" YOURLS (use a translation instead of the default English). A corresponding .mo file
  ** must be installed in the user/language directory.
  ** See http://yourls.org/translations for more information */
 // This is not that important as we adapted any frontend pages anyway.
-define( 'YOURLS_LANG', '' ); 
+define( 'YOURLS_LANG', '' );
 
 /** Allow multiple short URLs for a same long URL
  ** Set to true to have only one pair of shortURL/longURL (default YOURLS behavior)
@@ -47,8 +47,8 @@ define('YOURLS_PRIVATE_INFOS', false);
 $allowed_domains = array(
 	array(
 		'domain'   => 'uni-frankfurt.de',
-		'desc'     => 'Alle Seiten innerhalb der Uni Frankfurt',
-		
+		'desc'     => 'Alle Seiten innerhalb der Goethe-Universität',
+
 		// TODO: list shorturl links instead which demonstrate correct links, eg.
 		// '2 4b 58' => tinygu.de/domain-examples/2, tinygu.de/domain-examples/4b
 		//           => resolved to http://www.uni-frankfurt.de/5732900..., ....
@@ -69,7 +69,7 @@ $allowed_domains = array(
 	),
 );
 
-# This does not yet work. 
+# This does not yet work.
 
 #/* Simple role-based access controls (RBAC) for YOURLS */
 #$authmgr_role_assignment = array(
@@ -89,7 +89,7 @@ $allowed_domains = array(
 /** Debug mode to output some internal information
  ** Default is false for live site. Enable when coding or before submitting a new issue */
 define( 'YOURLS_DEBUG', false );
-	
+
 /*
  ** URL Shortening settings
  */
@@ -108,7 +108,7 @@ define( 'YOURLS_URL_CONVERT', 62 );
  * Stick to one setting. It's best not to change after you've started creating links.
  */
 
-/** 
+/**
 * Reserved keywords (so that generated URLs won't match them)
 * Define here negative, unwanted or potentially misleading keywords.
 */
