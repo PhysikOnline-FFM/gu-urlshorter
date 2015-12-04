@@ -17,7 +17,7 @@ function yourls_html_logo() {
 
 			<h1 class="department">
 				<span class="departmentTitle"><a href="/infos" title="Infos">Kurzlink-Service</a></span><br>
-				<span class="departmentName"><a href="/"><?php echo $_SERVER['HTTP_HOST']; ?></a></span>
+				<!-- <span class="departmentName"><a href="/"><?php echo $_SERVER['HTTP_HOST']; ?></a></span> --!>
 			</h1>
 
 		</div>
@@ -398,9 +398,9 @@ function yourls_html_select( $name, $options, $selected = '', $display = false )
  */
 function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlink_title = '', $share_title = '', $hidden = false ) {
 	if ( $shortlink_title == '' )
-		$shortlink_title = '<h2>' . yourls__( 'Your short link' ) . '</h2>';
+		$shortlink_title = '<h2>' . yourls__( 'Dein Kurzlink' ) . '</h2>';
 	if ( $share_title == '' )
-		$share_title = '<h2>' . yourls__( 'Quick Share' ) . '</h2>';
+		$share_title = '<h2>' . yourls__( 'Teilen' ) . '</h2>';
 
 	// Allow plugins to short-circuit the whole function
 	$pre = yourls_apply_filter( 'shunt_share_box', false );
@@ -434,9 +434,9 @@ function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlin
 			</div>
 			<div class="panel-body">
 				<p><input id="copylink" class="form-control input-lg" value="<?php echo yourls_esc_url( $shorturl ); ?>" /></p>
-				<p><?php yourls_e( 'Long link' ); ?>: <a id="origlink" href="<?php echo yourls_esc_url( $longurl ); ?>"><?php echo yourls_esc_url( $longurl ); ?></a>
+				<p><?php yourls_e( 'Verweist auf' ); ?>: <a id="origlink" href="<?php echo yourls_esc_url( $longurl ); ?>"><?php echo yourls_esc_url( $longurl ); ?></a>
 				<?php if( yourls_do_log_redirect() ) { ?>
-				<br/><?php yourls_e( 'Stats' ); ?>: <a id="statlink" href="<?php echo yourls_esc_url( $shorturl ); ?>+"><?php echo yourls_esc_url( $shorturl ); ?>+</a>
+				<br/><?php yourls_e( 'Statistiken' ); ?>: <a id="statlink" href="<?php echo yourls_esc_url( $shorturl ); ?>+"><?php echo yourls_esc_url( $shorturl ); ?>+</a>
 				<input type="hidden" id="titlelink" value="<?php echo yourls_esc_attr( $title ); ?>" />
 				<?php } ?>
 				</p>
@@ -456,7 +456,7 @@ function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlin
 						<!--<span id="charcount" class="hide-if-no-js"><?php echo $count; ?></span>-->
 						<textarea id="tweet_body" class="form-control" rows="5"><?php echo $share; ?></textarea>
 					</div>
-					<p id="share_links"><?php yourls_e( 'Share with' ); ?>
+					<p id="share_links"><?php yourls_e( 'Teilen über' ); ?>
 						<a id="share_tw" href="http://twitter.com/home?status=<?php echo $_share; ?>" title="<?php yourls_e( 'Tweet this!' ); ?>" onclick="share('tw');return false">Twitter</a>
 						<a id="share_fb" href="http://www.facebook.com/share.php?u=<?php echo $_url; ?>" title="<?php yourls_e( 'Share on Facebook' ); ?>" onclick="share('fb');return false;">Facebook</a>
 						<a id="share_ff" href="http://friendfeed.com/share/bookmarklet/frame#title=<?php echo $_share; ?>" title="<?php yourls_e( 'Share on Friendfeed' ); ?>" onclick="share('ff');return false;">FriendFeed</a>
