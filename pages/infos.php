@@ -24,7 +24,12 @@ yourls_html_logo();
 			<?php $host = $_SERVER['HTTP_HOST'];
 			      $hostlink = "<a href='$host'>$host</a>"; ?>
 			<p>Willkommen beim Kurz-URL-Dienst an der <a href="http://www.uni-frankfurt.de">Goethe-Universität Frankfurt am Main</a>.
-			Sie erreichen diesen Dienst unter der Adresse <strong><?=$hostlink; ?></strong>.
+			
+			<p>Sie erreichen diesen Dienst unter folgenden Adressen:
+			<ul>
+			<li> <a href="http://tinygu.de">tinygu.de</a> </li>
+			<li> <a href="http://goethe.link">goethe.link</a> </li>
+			</ul></p>
 
 			<p>Dieser Dienst dient dazu, Webseiten innerhalb der Goethe-Universität mit einer kürzeren
 			Adresse zugänglich zu machen (<a href="https://de.wikipedia.org/wiki/Kurz-URL-Dienst">Kurz-URL-Dienst</a>).
@@ -36,7 +41,7 @@ yourls_html_logo();
 			kürzen, also als Daumenregel alle Adressen, die ein <tt>uni-frankfurt.de</tt> beinhalten. So können sie
 			sicher gehen, dass Adressen unterhalb von <?=$hostlink; ?> nicht auf böswillige Seiten
 			weiterleiten. Anders als Dienste wie <a href="http://bit.ly">bit.ly</a> oder <a href="http://goo.gl">goo.gl</a>
-			bietet <?=$hostlink; ?> einen Wiedererkennungswert und stellt einen direkten Bezug zur Goethe-Universität her, darauf
+			bietet <?=$hostlink; ?> einen Wiedererkennungswert und stellt einen direkten Bezug zur Goethe-Universität her, der darauf
 			hinweist, dass es sich beim Linkziel um eine Ressource der Goethe-Universität handelt.
 		</div>
 	</div>
