@@ -123,7 +123,7 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 
 	<meta name="author" content="Yourls and the Goethe University YOURLS team" />
 	<meta name="generator" content="YOURLS <?php echo YOURLS_VERSION ?>" />
-	<meta name="description" content="YOURLS &raquo; Your Own URL Shortener' | <?php yourls_site_url(); ?>" />
+	<meta name="description" content="URL Shortener of the Goethe University | <?php yourls_site_url(); ?>" />
     <meta name="referrer" content="always" />
 	<script src="<?php yourls_site_url(); ?>/js/jquery-1.9.1.min.js?v=<?php echo YOURLS_VERSION; ?>" type="text/javascript"></script>
 	<script src="<?php yourls_site_url(); ?>/js/common.js?v=<?php echo YOURLS_VERSION; ?>" type="text/javascript"></script>
