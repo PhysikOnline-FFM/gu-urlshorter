@@ -67,6 +67,10 @@ $allowed_domains = array(
 		'domain'  => 'hebis.de',
 		'desc'    => 'Hessischer Bibliotheksverbund (intensiv genutzt durch Universitätsbibliothek)',
 	),
+	array(
+	    'domain'  => 'asta-frankfurt.de',
+	    'desc'    => 'Allgemeiner Studierendenausschuss der Goethe-Universität',
+	),
 );
 
 # This does not yet work.
