@@ -143,7 +143,7 @@ if($formSubmitted) {
 				<button type="submit" tabindex="2" class="btn btn-primary btn-lg" title="Tipp: Einfach Enter drücken"><i class="fa fa-rocket"></i> Kürzen</button>
 			</div>
 			<input type="text" tabindex="3" name="keyword" placeholder="Optionales Kürzel" class="form-control input"
-				style="width:20%" maxlength="30"
+				style="width:20%" maxlength="30" <?php if(isset($_GET["suggest-keyword"])) print 'keyword="'.htmlentities($_GET['suggest-keyword']).'"'; ?>
 				title="Ohne Kürzel wird ein zufälliges Kürzel mit vier Buchstaben erzeugt">
 
 
