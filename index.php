@@ -137,27 +137,26 @@ if($formSubmitted) {
 	<div class="main-column">
 		<h2>Erstelle einen Goethe-Universität-Kurzlink</h2>
 		<form method="post" action="">
-			<input tabindex="1" type="text" name="url" placeholder="http://etwas.uni-frankfurt.de/..." class="form-control input-lg" autofocus />
-			<br>
-			<div class="pull-right">
-				<button type="submit" tabindex="2" class="btn btn-primary btn-lg" title="Tipp: Einfach Enter drücken"><i class="fa fa-rocket"></i> Kürzen</button>
+			<div class="input-group">
+				<input tabindex="1" type="text" name="url" placeholder="http://etwas.uni-frankfurt.de/..." class="form-control input-lg" autofocus />
+				<span class="input-group-btn">
+					<button type="submit" tabindex="3" class="btn btn-primary btn-lg" title="Tipp: Einfach Enter drücken"><i class="fa fa-rocket"></i> Kürzen</button>
+				</span>
 			</div>
-			<input type="text" tabindex="3" name="keyword" placeholder="Optionales Kürzel" class="form-control input"
-				style="width:20%" maxlength="30"
-				title="Ohne Kürzel wird ein zufälliges Kürzel mit vier Buchstaben erzeugt">
-
-
-		<!--
-
-		<p style="margin: 2em; text-align: center;"">
-			<input type="text" name="keyword" placeholder="keyword" class="btn btn-lg">
-			<input type="text" name="title" placeholder="title" class="btn btn-lg">
-			<button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-rocket"></i> Kürzen</button>
-		</p>
-		-->
+			<div id="optional-keyword">
+				<strong>Optional kannst du statt des Zufallkürzels ein eigenes vergeben:</strong>
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">
+						<?php echo $site . '/'; ?>
+					</span>
+					<input type="text" tabindex="2" name="keyword" placeholder="Optionales Kürzel" class="form-control input"
+						maxlength="30"
+						title="Ohne Kürzel wird ein zufälliges Kürzel mit vier Buchstaben erzeugt" />
+				</div>
+			</div>
+		</form>
 	</div>
 	<div class="sidebar-column">
-
 		<div class="panel panel-sidebar">
 			<h2>Der KurzURL-Dienst</h2>
 			<div class="panel-body">
