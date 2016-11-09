@@ -11,13 +11,13 @@ $base_page   = yourls_admin_url( 'index.php' );
 
 // Default SQL behavior
 $search_in_text  = yourls__( 'URL' );
-$search_in       = 'url';
+$search_in       = 'all';
 $sort_by_text    = yourls__( 'Short URL' );
 $sort_by         = 'timestamp';
 $sort_order      = 'desc';
 $page            = ( isset( $_GET['page'] ) ? intval($_GET['page']) : 1 );
 $search          = yourls_get_search_text();
-$perpage         = ( isset( $_GET['perpage'] ) && intval( $_GET['perpage'] ) ? intval($_GET['perpage']) : 15 );
+$perpage         = ( isset( $_GET['perpage'] ) && intval( $_GET['perpage'] ) ? intval($_GET['perpage']) : yourls_apply_filter( 'admin_view_per_page', 15 ) );
 $click_limit     = ( isset( $_GET['click_limit'] ) && $_GET['click_limit'] !== '' ) ? intval( $_GET['click_limit'] ) : '' ;
 if ( $click_limit !== '' ) {
 	$click_filter   = ( isset( $_GET['click_filter'] ) && $_GET['click_filter'] == 'more' ? 'more' : 'less' ) ;
@@ -30,6 +30,10 @@ if ( $click_limit !== '' ) {
 // Searching
 if( !empty( $search ) && !empty( $_GET['search_in'] ) ) {
 	switch( $_GET['search_in'] ) {
+		case 'all':
+			$search_in_text = yourls__( 'All fields' );
+			$search_in      = 'all';
+			break;
 		case 'keyword':
 			$search_in_text = yourls__( 'Short URL' );
 			$search_in      = 'keyword';
@@ -51,7 +55,15 @@ if( !empty( $search ) && !empty( $_GET['search_in'] ) ) {
 	$search_url      = yourls_sanitize_url( "&amp;search=$search&amp;search_in=$search_in" );
 	$search_text     = $search;
 	$search          = str_replace( '*', '%', '*' . yourls_escape( $search ) . '*' );
-	$where .= " AND `$search_in` LIKE ('$search')";
+    if( $search_in == 'all' ) {
+        $where .= " AND CONCAT_WS('',`keyword`,`url`,`title`,`ip`) LIKE ('$search')";
+        // Search across all fields. The resulting SQL will be something like:
+        // SELECT * FROM `yourls_url` WHERE CONCAT_WS('',`keyword`,`url`,`title`,`ip`) LIKE ("%ozh%")
+        // CONCAT_WS because CONCAT('foo', 'bar’, NULL) = NULL. NULL wins. Not sure if values can be NULL now or in the future, so better safe.
+        // TODO: pay attention to this bit when the DB schema changes
+    } else {
+        $where .= " AND `$search_in` LIKE ('$search')";
+    }
 }
 
 // Time span
@@ -200,7 +212,7 @@ if ( isset( $_GET['u'] ) or isset( $_GET['up'] ) ) {
 
 			case 'tumblr':
 				// share with Tumblr
-				$destination = sprintf( "http://www.tumblr.com/share?v=3&u=%s&t=%s&s=%s", urlencode( $return['shorturl'] ), urlencode( $title ), urlencode( $text ) );
+				$destination = sprintf( "https://www.tumblr.com/share?v=3&u=%s&t=%s&s=%s", urlencode( $return['shorturl'] ), urlencode( $title ), urlencode( $text ) );
 				yourls_redirect( $destination, 303 );
 
 				// Deal with the case when redirection failed:
@@ -274,12 +286,13 @@ if ( !$is_bookmark ) { ?>
 			echo ", " . sprintf( yourls_n( 'counting <strong>1</strong> click', 'counting <strong>%s</strong> clicks', $total_items_clicks ), yourls_number_format_i18n( $total_items_clicks ) );
 	?>.</p>
 <?php } ?>
-<p><?php printf( yourls__( 'Overall, tracking <strong class="increment">%1$s</strong> links, <strong>%2$s</strong> clicks, and counting!' ), yourls_number_format_i18n( $total_urls ), yourls_number_format_i18n( $total_clicks ) ); ?></p>
-<?php yourls_do_action( 'admin_page_before_form' ); ?>
-
-<?php yourls_html_addnew(); ?>
-
+<p id="overall_tracking"><?php printf( yourls__( 'Overall, tracking <strong class="increment">%1$s</strong> links, <strong>%2$s</strong> clicks, and counting!' ), yourls_number_format_i18n( $total_urls ), yourls_number_format_i18n( $total_clicks ) ); ?></p>
 <?php
+
+yourls_do_action( 'admin_page_before_form' );
+
+yourls_html_addnew();
+
 // If bookmarklet, add message. Otherwise, hide hidden share box.
 if ( !$is_bookmark ) {
 	yourls_share_box( '', '', '', '', '', '', true );

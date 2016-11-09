@@ -6,6 +6,7 @@ yourls_maybe_require_auth();
 // Handle plugin administration pages
 if( isset( $_GET['page'] ) && !empty( $_GET['page'] ) ) {
 	yourls_plugin_admin_page( $_GET['page'] );
+    die();
 }
 
 // Handle activation/deactivation of plugins
@@ -60,6 +61,7 @@ yourls_html_logo();
 yourls_html_menu();
 ?>
 
+	<main role="main">
 	<h2><?php yourls_e( 'Plugins' ); ?></h2>
 	
 	<?php
@@ -159,6 +161,6 @@ yourls_html_menu();
 	<h3><?php yourls_e( 'More plugins' ); ?></h3>
 	
 	<p><?php yourls_e( 'For more plugins, head to the official <a href="http://yourls.org/pluginlist">Plugin list</a>.' ); ?></p>
-
+	</main>
 	
 <?php yourls_html_footer(); ?>

@@ -11,6 +11,8 @@
 	/**********************************************************************
 	*  ezSQL error strings - PDO
 	*/
+    
+    global $ezsql_pdo_str;
 
 	$ezsql_pdo_str = array
 	(
@@ -37,7 +39,7 @@
 		*  same time as initialising the ezSQL_pdo class
 		*/
 
-		function ezSQL_pdo($dsn='', $user='', $password='', $ssl=array())
+		function __construct($dsn='', $user='', $password='', $ssl=array())
 		{
 			// Turn on track errors 
 			ini_set('track_errors',1);
@@ -213,6 +215,8 @@
 			if ( ! isset($this->dbh) || ! $this->dbh )
 			{
 				$this->connect($this->dsn, $this->user, $this->password);
+                if ( ! isset($this->dbh) || ! $this->dbh )
+                    return false;
 			}
 
 			// Query was an insert, delete, update, replace

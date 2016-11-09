@@ -4,15 +4,9 @@
  *
  */
 function yourls_is_valid_user() {
-	static $valid = false;
-	
-	if( $valid )
-		return true;
-		
 	// Allow plugins to short-circuit the whole function
 	$pre = yourls_apply_filter( 'shunt_is_valid_user', null );
 	if ( null !== $pre ) {
-		$valid = ( $pre === true ) ;
 		return $pre;
 	}
 	
@@ -67,7 +61,7 @@ function yourls_is_valid_user() {
 	elseif
 		// Normal only: cookies
 		( !yourls_is_API() && 
-		  isset( $_COOKIE['yourls_username'] ) )
+		  isset( $_COOKIE[ yourls_cookie_name() ] ) )
 		{
 			yourls_do_action( 'pre_login_cookie' );
 			$unfiltered_valid = yourls_check_auth_cookie();
@@ -176,7 +170,7 @@ function yourls_hash_passwords_now( $config_file ) {
 			// PHP would interpret $ as a variable, so replace it in storage.
 			$hash = str_replace( '$', '!', $hash );
 			$quotes = "'" . '"';
-			$pattern = "/[$quotes]${user}[$quotes]\s*=>\s*[$quotes]" . preg_quote( $password, '-' ) . "[$quotes]/";
+			$pattern = "/[$quotes]${user}[$quotes]\s*=>\s*[$quotes]" . preg_quote( $password, '/' ) . "[$quotes]/";
 			$replace = "'$user' => 'phpass:$hash' /* Password encrypted by YOURLS */ ";
 			$count = 0;
 			$configdata = preg_replace( $pattern, $replace, $configdata, -1, $count );
@@ -307,7 +301,7 @@ function yourls_has_phpass_password( $user ) {
 function yourls_check_auth_cookie() {
 	global $yourls_user_passwords;
 	foreach( $yourls_user_passwords as $valid_user => $valid_password ) {
-		if ( yourls_salt( $valid_user ) == $_COOKIE['yourls_username'] ) {
+		if ( yourls_salt( $valid_user ) == $_COOKIE[ yourls_cookie_name() ] ) {
 			yourls_set_user( $valid_user );
 			return true;
 		}
@@ -318,10 +312,20 @@ function yourls_check_auth_cookie() {
 /**
  * Check auth against signature and timestamp. Sets user if applicable, returns bool
  *
+ *
+ * @since 1.4.1
+ * @return bool False if signature or timestamp missing or invalid, true if valid
  */
 function yourls_check_signature_timestamp() {
+    if(   !isset( $_REQUEST['signature'] ) OR empty( $_REQUEST['signature'] )
+       OR !isset( $_REQUEST['timestamp'] ) OR empty( $_REQUEST['timestamp'] )
+    )
+        return false;
+
 	// Timestamp in PHP : time()
 	// Timestamp in JS: parseInt(new Date().getTime() / 1000)
+    
+	// Check signature & timestamp against all possible users
 	global $yourls_user_passwords;
 	foreach( $yourls_user_passwords as $valid_user => $valid_password ) {
 		if (
@@ -337,21 +341,31 @@ function yourls_check_signature_timestamp() {
 			return true;
 		}
 	}
+
+    // Signature doesn't match known user
 	return false;
 }
 
 /**
  * Check auth against signature. Sets user if applicable, returns bool
  *
+ * @since 1.4.1
+ * @return bool False if signature missing or invalid, true if valid
  */
 function yourls_check_signature() {
-	global $yourls_user_passwords;
+    if( !isset( $_REQUEST['signature'] ) OR empty( $_REQUEST['signature'] ) )
+        return false;
+    
+	// Check signature against all possible users
+    global $yourls_user_passwords;
 	foreach( $yourls_user_passwords as $valid_user => $valid_password ) {
 		if ( yourls_auth_signature( $valid_user ) == $_REQUEST['signature'] ) {
 			yourls_set_user( $valid_user );
 			return true;
 		}
 	}
+    
+    // Signature doesn't match known user
 	return false;
 }
 
@@ -398,20 +412,21 @@ function yourls_store_cookie( $user = null ) {
 	$secure   = yourls_apply_filter( 'setcookie_secure',   yourls_is_ssl() );
 	$httponly = yourls_apply_filter( 'setcookie_httponly', true );
 
-	// Some browser refuse to store localhost cookie
+	// Some browsers refuse to store localhost cookie
 	if ( $domain == 'localhost' ) 
 		$domain = '';
    
-	if ( !headers_sent() ) {
+    if ( !headers_sent( $filename, $linenum ) ) {
 		// Set httponly if the php version is >= 5.2.0
 		if( version_compare( phpversion(), '5.2.0', 'ge' ) ) {
-			setcookie('yourls_username', yourls_salt( $user ), $time, '/', $domain, $secure, $httponly );
+			setcookie( yourls_cookie_name(), yourls_salt( $user ), $time, '/', $domain, $secure, $httponly );
 		} else {
-			setcookie('yourls_username', yourls_salt( $user ), $time, '/', $domain, $secure );
+			setcookie( yourls_cookie_name(), yourls_salt( $user ), $time, '/', $domain, $secure );
 		}
 	} else {
 		// For some reason cookies were not stored: action to be able to debug that
 		yourls_do_action( 'setcookie_failed', $user );
+        yourls_debug_log( "Could not store cookie: headers already sent in $filename on line $linenum" );
 	}
 }
 
@@ -424,3 +439,16 @@ function yourls_set_user( $user ) {
 		define( 'YOURLS_USER', $user );
 }
 
+/**
+ * Get YOURLS cookie name
+ *
+ * The name is unique for each install, to prevent mismatch between sho.rt and very.sho.rt -- see #1673
+ *
+ * TODO: when multi user is implemented, the whole cookie stuff should be reworked to allow storing multiple users
+ *
+ * @since 1.7.1
+ * @return string  unique cookie name for a given YOURLS site
+ */
+function yourls_cookie_name() {
+    return 'yourls_' . yourls_salt( YOURLS_SITE );
+}

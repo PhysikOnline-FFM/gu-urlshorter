@@ -12,21 +12,14 @@ function yourls_get_shorturl_charset() {
 	static $charset = null;
 	if( $charset !== null )
 		return $charset;
-		
-	if( !defined('YOURLS_URL_CONVERT') ) {
-		$charset = '0123456789abcdefghijklmnopqrstuvwxyz';
-	} else {
-		switch( YOURLS_URL_CONVERT ) {
-			case 36:
-				$charset = '0123456789abcdefghijklmnopqrstuvwxyz';
-				break;
-			case 62:
-			case 64: // just because some people get this wrong in their config.php
-				$charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-				break;
-		}
-	}
-	
+
+    if( defined('YOURLS_URL_CONVERT') && in_array( YOURLS_URL_CONVERT, array( 62, 64 ) ) ) {
+        $charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    } else {
+        // defined to 36, or wrongly defined 
+        $charset = '0123456789abcdefghijklmnopqrstuvwxyz';
+    }
+
 	$charset = yourls_apply_filter( 'get_shorturl_charset', $charset );
 	return $charset;
 }
@@ -37,7 +30,7 @@ function yourls_get_shorturl_charset() {
  */
 function yourls_make_regexp_pattern( $string ) {
 	$pattern = preg_quote( $string, '-' ); // add - as an escaped characters -- this is fixed in PHP 5.3
-	// TODO: replace char sequences by smart sequences such as 0-9, a-z, A-Z ... ?
+	// Simple benchmarks show that regexp with smarter sequences (0-9, a-z, A-Z...) are not faster or slower than 0123456789 etc...
 	return $pattern;
 }
 
@@ -423,38 +416,6 @@ function yourls_keyword_is_taken( $keyword ) {
 	return yourls_apply_filter( 'keyword_is_taken', $taken, $keyword );
 }
 
-
-/**
- * Connect to DB
- *
- */
-function yourls_db_connect() {
-	global $ydb;
-
-	if (   !defined( 'YOURLS_DB_USER' )
-		or !defined( 'YOURLS_DB_PASS' )
-		or !defined( 'YOURLS_DB_NAME' )
-		or !defined( 'YOURLS_DB_HOST' )
-	) yourls_die ( yourls__( 'Incorrect DB config, or could not connect to DB' ), yourls__( 'Fatal error' ), 503 );	
-
-	// Are we standalone or in the WordPress environment?
-	if ( class_exists( 'wpdb', false ) ) {
-		/* TODO: should we deprecate this? Follow WP dev in that area */
-		$ydb =  new wpdb( YOURLS_DB_USER, YOURLS_DB_PASS, YOURLS_DB_NAME, YOURLS_DB_HOST );
-	} else {
-		yourls_set_DB_driver();
-	}
-	
-	// Check if connection attempt raised an error. It seems that only PDO does, though.
-	if ( $ydb->last_error )
-		yourls_die( $ydb->last_error, yourls__( 'Fatal error' ), 503 );
-	
-	if ( defined( 'YOURLS_DEBUG' ) && YOURLS_DEBUG === true )
-		$ydb->show_errors = true;
-	
-	return $ydb;
-}
-
 /**
  * Return XML output.
  *
@@ -734,10 +695,15 @@ function yourls_redirect( $location, $code = 301 ) {
 /**
  * Set HTTP status header
  *
+ * @since 1.4
+ * @param int $code  status header code
+ * @return bool      whether header was sent
  */
 function yourls_status_header( $code = 200 ) {
+	yourls_do_action( 'status_header', $code );
+    
 	if( headers_sent() )
-		return;
+		return false;
 		
 	$protocol = $_SERVER['SERVER_PROTOCOL'];
 	if ( 'HTTP/1.1' != $protocol && 'HTTP/1.0' != $protocol )
@@ -747,7 +713,8 @@ function yourls_status_header( $code = 200 ) {
 	$desc = yourls_get_HTTP_status( $code );
 
 	@header ("$protocol $code $desc"); // This causes problems on IIS and some FastCGI setups
-	yourls_do_action( 'status_header', $code );
+    
+    return true;
 }
 
 /**
@@ -841,10 +808,15 @@ function yourls_get_HTTP_status( $code ) {
 		return '';
 }
 
-
 /**
  * Log a redirect (for stats)
  *
+ * This function does not check for the existence of a valid keyword, in order to save a query. Make sure the keyword
+ * exists before calling it.
+ *
+ * @since 1.4
+ * @param string $keyword short URL keyword
+ * @return mixed Result of the INSERT query (1 on success)
  */
 function yourls_log_redirect( $keyword ) {
 	// Allow plugins to short-circuit the whole function
@@ -858,13 +830,14 @@ function yourls_log_redirect( $keyword ) {
 	global $ydb;
 	$table = YOURLS_DB_TABLE_LOG;
 	
+    $now      = date( 'Y-m-d H:i:s' );
 	$keyword  = yourls_escape( yourls_sanitize_string( $keyword ) );
 	$referrer = ( isset( $_SERVER['HTTP_REFERER'] ) ? yourls_escape( yourls_sanitize_url( $_SERVER['HTTP_REFERER'] ) ) : 'direct' );
 	$ua       = yourls_escape( yourls_get_user_agent() );
 	$ip       = yourls_escape( yourls_get_IP() );
 	$location = yourls_escape( yourls_geo_ip_to_countrycode( $ip ) );
 	
-	return $ydb->query( "INSERT INTO `$table` (click_time, shorturl, referrer, user_agent, ip_address, country_code) VALUES (NOW(), '$keyword', '$referrer', '$ua', '$ip', '$location')" );
+	return $ydb->query( "INSERT INTO `$table` (click_time, shorturl, referrer, user_agent, ip_address, country_code) VALUES ('$now', '$keyword', '$referrer', '$ua', '$ip', '$location')" );
 }
 
 /**
@@ -1025,9 +998,10 @@ function yourls_get_option( $option_name, $default = false ) {
 /**
  * Read all options from DB at once
  *
- * The goal is to read all option at once and then populate array $ydb->option, to prevent further
+ * The goal is to read all options at once and then populate array $ydb->option, to prevent further
  * SQL queries if we need to read an option value later.
- * It's also a simple check whether YOURLS is installed or not (no option = assuming not installed)
+ * It's also a simple check whether YOURLS is installed or not (no option = assuming not installed) after
+ * a check for DB server reachability has been performed
  *
  * @since 1.4
  */
@@ -1051,8 +1025,11 @@ function yourls_get_all_options() {
 		$ydb->option = yourls_apply_filter( 'get_all_options', $ydb->option );
 		$ydb->installed = true;
 	} else {
-		// Zero option found: assume YOURLS is not installed
-		$ydb->installed = false;
+		// Zero option found: either YOURLS is not installed or DB server is dead
+        if( !yourls_is_db_alive() ) {
+            yourls_db_dead(); // YOURLS will die here
+        }
+        $ydb->installed = false;
 	}
 }
 
@@ -1488,11 +1465,7 @@ function yourls_rnd_string ( $length = 5, $type = 0, $charlist = '' ) {
 		
 	}
 
-	$i = 0;
-	while ($i < $length) {
-		$str .= substr( $possible, mt_rand( 0, strlen( $possible )-1 ), 1 );
-		$i++;
-	}
+    $str = substr( str_shuffle( $possible ), 0, $length );
 	
 	return yourls_apply_filter( 'rnd_string', $str, $length, $type, $charlist );
 }
@@ -1516,6 +1489,13 @@ function yourls_salt( $string ) {
  *     'var', 'value', $url 
  * If $url omitted, uses $_SERVER['REQUEST_URI']
  *
+ * The result of this function call is a URL : it should be escaped before being printed as HTML
+ *
+ * @since 1.5
+ * @param string|array $param1 Either newkey or an associative_array.
+ * @param string       $param2 Either newvalue or oldquery or URI.
+ * @param string       $param3 Optional. Old query or URI.
+ * @return string New URL query string.
  */
 function yourls_add_query_arg() {
 	$ret = '';
@@ -1597,6 +1577,12 @@ function yourls_urlencode_deep( $value ) {
 /**
  * Remove arg from query. Opposite of yourls_add_query_arg. Stolen from WP.
  *
+ * The result of this function call is a URL : it should be escaped before being printed as HTML
+ *
+ * @since 1.5
+ * @param string|array $key   Query key or keys to remove.
+ * @param bool|string  $query Optional. When false uses the $_SERVER value. Default false.
+ * @return string New URL query string.
  */
 function yourls_remove_query_arg( $key, $query = false ) {
 	if ( is_array( $key ) ) { // removing multiple keys
@@ -1690,18 +1676,8 @@ function yourls_link( $keyword = '' ) {
 function yourls_statlink( $keyword = '' ) {
 	$link = YOURLS_SITE . '/' . yourls_sanitize_keyword( $keyword ) . '+';
 	if( yourls_is_ssl() )
-		$link = str_replace( 'http://', 'https://', $link );
+        $link = yourls_set_url_scheme( $link, 'https' );
 	return yourls_apply_filter( 'yourls_statlink', $link, $keyword );
-}
-
-/**
- * Check if we'll need interface display function (ie not API or redirection)
- *
- */
-function yourls_has_interface() {
-	if( yourls_is_API() or yourls_is_GO() )
-		return false;
-	return true;
 }
 
 /**
@@ -1709,9 +1685,8 @@ function yourls_has_interface() {
  *
  */
 function yourls_is_API() {
-	if ( defined( 'YOURLS_API' ) && YOURLS_API == true )
-		return true;
-	return false;
+    $return = defined( 'YOURLS_API' ) && YOURLS_API == true;
+    return yourls_apply_filter( 'is_API', $return );
 }
 
 /**
@@ -1719,9 +1694,8 @@ function yourls_is_API() {
  *
  */
 function yourls_is_Ajax() {
-	if ( defined( 'YOURLS_AJAX' ) && YOURLS_AJAX == true )
-		return true;
-	return false;
+    $return = defined( 'YOURLS_AJAX' ) && YOURLS_AJAX == true;
+    return yourls_apply_filter( 'is_Ajax', $return );
 }
 
 /**
@@ -1729,9 +1703,8 @@ function yourls_is_Ajax() {
  *
  */
 function yourls_is_GO() {
-	if ( defined( 'YOURLS_GO' ) && YOURLS_GO == true )
-		return true;
-	return false;
+    $return = defined( 'YOURLS_GO' ) && YOURLS_GO == true;
+    return yourls_apply_filter( 'is_GO', $return );
 }
 
 /**
@@ -1739,9 +1712,8 @@ function yourls_is_GO() {
  *
  */
 function yourls_is_infos() {
-	if ( defined( 'YOURLS_INFOS' ) && YOURLS_INFOS == true )
-		return true;
-	return false;
+    $return = defined( 'YOURLS_INFOS' ) && YOURLS_INFOS == true;
+    return yourls_apply_filter( 'is_infos', $return );
 }
 
 /**
@@ -1749,9 +1721,8 @@ function yourls_is_infos() {
  *
  */
 function yourls_is_admin() {
-	if ( defined( 'YOURLS_ADMIN' ) && YOURLS_ADMIN == true )
-		return true;
-	return false;
+    $return = defined( 'YOURLS_ADMIN' ) && YOURLS_ADMIN == true;
+    return yourls_apply_filter( 'is_admin', $return );
 }
 
 /**
@@ -1767,9 +1738,8 @@ function yourls_is_windows() {
  *
  */
 function yourls_needs_ssl() {
-	if ( defined('YOURLS_ADMIN_SSL') && YOURLS_ADMIN_SSL == true )
-		return true;
-	return false;
+    $return = defined('YOURLS_ADMIN_SSL') && YOURLS_ADMIN_SSL == true;
+    return yourls_apply_filter( 'needs_ssl', $return );
 }
 
 /**
@@ -1778,8 +1748,9 @@ function yourls_needs_ssl() {
  */
 function yourls_admin_url( $page = '' ) {
 	$admin = YOURLS_SITE . '/admin/' . $page;
-	if( yourls_is_ssl() or yourls_needs_ssl() )
-		$admin = str_replace('http://', 'https://', $admin);
+	if( yourls_is_ssl() or yourls_needs_ssl() ) {
+        $admin = yourls_set_url_scheme( $admin, 'https' );
+    }
 	return yourls_apply_filter( 'admin_url', $admin, $page );
 }
 
@@ -1792,11 +1763,13 @@ function yourls_site_url( $echo = true, $url = '' ) {
 	$url = trim( YOURLS_SITE . '/' . $url, '/' );
 	
 	// Do not enforce (checking yourls_need_ssl() ) but check current usage so it won't force SSL on non-admin pages
-	if( yourls_is_ssl() )
-		$url = str_replace( 'http://', 'https://', $url );
+	if( yourls_is_ssl() ) {
+		$url = yourls_set_url_scheme( $url, 'https' );
+    }
 	$url = yourls_apply_filter( 'site_url', $url );
-	if( $echo )
+	if( $echo ) {
 		echo $url;
+    }
 	return $url;
 }
 
@@ -1840,8 +1813,10 @@ function yourls_get_remote_title( $url ) {
 		return $url;	
 
 	$title = $charset = false;
+    
+    $max_bytes = yourls_apply_filter( 'get_remote_title_max_byte', 32768 ); // limit data fetching to 32K in order to find a <title> tag
 	
-	$response = yourls_http_get( $url ); // can be a Request object or an error string
+	$response = yourls_http_get( $url, array(), array(), array( 'max_bytes' => $max_bytes ) ); // can be a Request object or an error string
 	if( is_string( $response ) ) {
 		return $url;
 	}
@@ -1890,7 +1865,7 @@ function yourls_get_remote_title( $url ) {
 	$title = html_entity_decode( $title, ENT_QUOTES, 'UTF-8' );
 	
 	// Strip out evil things
-	$title = yourls_sanitize_title( $title );
+	$title = yourls_sanitize_title( $title, $url );
 		
 	return yourls_apply_filter( 'get_remote_title', $title, $url );
 }
@@ -1919,7 +1894,7 @@ function yourls_is_mobile_device() {
 }
 
 /**
- * Get request in YOURLS base (eg in 'http://site.com/yourls/abcd' get 'abdc')
+ * Get request in YOURLS base (eg in 'http://sho.rt/yourls/abcd' get 'abdc')
  *
  */
 function yourls_get_request() {
@@ -2015,8 +1990,13 @@ function yourls_shutdown() {
  */
 function yourls_favicon( $echo = true ) {
 	static $favicon = null;
-	if( $favicon !== null )
-		return $favicon;
+    
+	if( $favicon !== null ) {
+        if( $echo ) {
+            echo $favicon;
+        }
+        return $favicon;    
+    }
 	
 	$custom = null;
 	// search for favicon.(gif|ico|png|jpg|svg)
@@ -2032,8 +2012,10 @@ function yourls_favicon( $echo = true ) {
 	} else {
 		$favicon = yourls_site_url( false ) . '/images/favicon.gif';
 	}
-	if( $echo )
+
+	if( $echo ) {
 		echo $favicon;
+    }
 	return $favicon;
 }
 
@@ -2093,6 +2075,7 @@ function yourls_current_admin_page() {
  * protocol, 'mailto://' isn't, and 'http:' with no double slashed isn't either
  *
  * @since 1.6
+ * @see yourls_get_protocol()
  *
  * @param string $url URL to be check
  * @param array $protocols Optional. Array of protocols, defaults to global $yourls_allowedprotocols
@@ -2111,13 +2094,20 @@ function yourls_is_allowed_protocol( $url, $protocols = array() ) {
 /**
  * Get protocol from a URL (eg mailto:, http:// ...)
  *
+ * What we liberally call a "protocol" in YOURLS is the scheme name + colon + double slashes if present of a URI. Examples:
+ * "something://blah" -> "something://"
+ * "something:blah"   -> "something:"
+ * "something:/blah"  -> "something:"
+ *
+ * Unit Tests for this function are located in tests/format/urls.php
+ *
  * @since 1.6
  *
  * @param string $url URL to be check
  * @return string Protocol, with slash slash if applicable. Empty string if no protocol
  */
 function yourls_get_protocol( $url ) {
-	preg_match( '!^[a-zA-Z0-9\+\.-]+:(//)?!', $url, $matches );
+	preg_match( '!^[a-zA-Z][a-zA-Z0-9\+\.-]+:(//)?!', $url, $matches );
 	/*
 	http://en.wikipedia.org/wiki/URI_scheme#Generic_syntax
 	The scheme name consists of a sequence of characters beginning with a letter and followed by any
@@ -2169,7 +2159,7 @@ function yourls_get_relative_url( $url, $strict = true ) {
  * @since 1.6
  * @uses yourls_do_action() Calls 'deprecated_function' and passes the function name, what to use instead,
  *   and the version the function was deprecated in.
- * @uses yourls_apply_filters() Calls 'deprecated_function_trigger_error' and expects boolean value of true to do
+ * @uses yourls_apply_filter() Calls 'deprecated_function_trigger_error' and expects boolean value of true to do
  *   trigger or false to not trigger error.
  *
  * @param string $function The function that was called
@@ -2181,7 +2171,7 @@ function yourls_deprecated_function( $function, $version, $replacement = null ) 
 	yourls_do_action( 'deprecated_function', $function, $replacement, $version );
 
 	// Allow plugin to filter the output error trigger
-	if ( YOURLS_DEBUG && yourls_apply_filters( 'deprecated_function_trigger_error', true ) ) {
+	if ( YOURLS_DEBUG && yourls_apply_filter( 'deprecated_function_trigger_error', true ) ) {
 		if ( ! is_null( $replacement ) )
 			trigger_error( sprintf( yourls__('%1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
 		else
@@ -2200,6 +2190,78 @@ function yourls_deprecated_function( $function, $version, $replacement = null ) 
  */
 function yourls_return_if_not_empty_string( $val ) {
 	return( $val !== '' );
+}
+
+/**
+ * Returns true.
+ *
+ * Useful for returning true to filters easily.
+ *
+ * @since 1.7.1
+ * @return bool True.
+ */
+function yourls_return_true() {
+    return true;
+}
+
+/**
+ * Returns false.
+ *
+ * Useful for returning false to filters easily.
+ *
+ * @since 1.7.1
+ * @return bool False.
+ */
+function yourls_return_false() {
+    return false;
+}
+
+/**
+ * Returns 0.
+ *
+ * Useful for returning 0 to filters easily.
+ *
+ * @since 1.7.1
+ * @return int 0.
+ */
+function yourls_return_zero() {
+    return 0;
+}
+
+/**
+ * Returns an empty array.
+ *
+ * Useful for returning an empty array to filters easily.
+ *
+ * @since 1.7.1
+ * @return array Empty array.
+ */
+function yourls_return_empty_array() {
+    return array();
+}
+
+/**
+ * Returns null.
+ *
+ * Useful for returning null to filters easily.
+ *
+ * @since 1.7.1
+ * @return null Null value.
+ */
+function yourls_return_null() {
+    return null;
+}
+
+/**
+ * Returns an empty string.
+ *
+ * Useful for returning an empty string to filters easily.
+ *
+ * @since 1.7.1
+ * @return string Empty string.
+ */
+function yourls_return_empty_string() {
+    return '';
 }
 
 /**
@@ -2252,5 +2314,20 @@ function yourls_get_protocol_slashes_and_rest( $url, $array = array( 'protocol',
 	list( $proto, $slashes ) = explode( ':', $proto );
 	
 	return array( $array[0] => $proto . ':', $array[1] => $slashes, $array[2] => $rest );
+}
+
+/**
+ * Set URL scheme (to HTTP or HTTPS)
+ *
+ * @since 1.7.1
+ * @param string $url URL
+ * @param string $scheme scheme, either 'http' or 'https'
+ * @return string URL with chosen scheme
+ */
+function yourls_set_url_scheme( $url, $scheme = false ) {
+    if( $scheme != 'http' && $scheme != 'https' ) {
+        return $url;
+    }
+    return preg_replace( '!^[a-zA-Z0-9\+\.-]+://!', $scheme . '://', $url );
 }
 

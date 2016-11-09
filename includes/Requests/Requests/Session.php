@@ -81,8 +81,9 @@ class Requests_Session {
 	 * @return mixed|null Property value, null if none found
 	 */
 	public function __get($key) {
-		if (isset($this->options[$key]))
+		if (isset($this->options[$key])) {
 			return $this->options[$key];
+		}
 
 		return null;
 	}
@@ -112,7 +113,9 @@ class Requests_Session {
 	 * @param string $key Property key
 	 */
 	public function __unset($key) {
-		$this->options[$key] = null;
+		if (isset($this->options[$key])) {
+			unset($this->options[$key]);
+		}
 	}
 
 	/**#@+
@@ -191,7 +194,7 @@ class Requests_Session {
 	 *
 	 * @param string $url URL to request
 	 * @param array $headers Extra headers to send with the request
-	 * @param array $data Data to send either as a query string for GET/HEAD requests, or in the body for POST requests
+	 * @param array|null $data Data to send either as a query string for GET/HEAD requests, or in the body for POST requests
 	 * @param string $type HTTP request type (use Requests constants)
 	 * @param array $options Options for the request (see {@see Requests::request})
 	 * @return Requests_Response
@@ -236,6 +239,7 @@ class Requests_Session {
 			$request['url'] = Requests_IRI::absolutize($this->url, $request['url']);
 			$request['url'] = $request['url']->uri;
 		}
+
 		$request['headers'] = array_merge($this->headers, $request['headers']);
 
 		if (is_array($request['data']) && is_array($this->data)) {
@@ -248,6 +252,7 @@ class Requests_Session {
 			// Disallow forcing the type, as that's a per request setting
 			unset($request['options']['type']);
 		}
+
 		return $request;
 	}
 }
