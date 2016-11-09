@@ -510,6 +510,7 @@ function yourls_table_edit_row( $keyword ) {
 	$keyword = yourls_sanitize_string( $keyword );
 	$id = yourls_string2htmlid( $keyword ); // used as HTML #id
 	$url = yourls_get_keyword_longurl( $keyword );
+
 	$title = htmlspecialchars( yourls_get_keyword_title( $keyword ) );
 	$safe_url = yourls_esc_attr( rawurldecode( $url ) );
 	$safe_title = yourls_esc_attr( $title );
@@ -519,8 +520,7 @@ function yourls_table_edit_row( $keyword ) {
     $safe_title = str_replace( '%', '%%', $safe_title );
 
 	$www = yourls_link();
-    
-    $nonce = yourls_create_nonce( 'edit-save_'.$id );
+	$nonce = yourls_create_nonce( 'edit-save_'.$id );
 
 	if( $url ) {
 		$return = <<<RETURN
@@ -904,7 +904,6 @@ function yourls_html_language_attributes() {
 	$output = '';
 
 	$attributes[] = ( yourls_is_rtl() ? 'dir="rtl"' : 'dir="ltr"' );
-	
 	$doctype = yourls_apply_filter( 'html_language_attributes_doctype', 'html' );
 
 	// Experimental: get HTML lang from locale. Should work. Convert fr_FR -> fr-FR

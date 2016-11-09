@@ -37,13 +37,6 @@ user/languages/*
 #!user/*/index.html
 
 ############
-## Tests
-############
-
-test*.php
-tests/
-
-############
 ## Environnement
 ############
 
