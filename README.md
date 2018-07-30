@@ -12,6 +12,12 @@ Diese Software ist bewusst so geschrieben, dass eine einzelne Installation unter
 
 Weitere Informationen, wo wir diese Software installiert haben und hosten, gibt es im [PhysikOnline Teamtracker](https://elearning.physik.uni-frankfurt.de/projekt/) unter [Allgemein/URL-Shortener](https://elearning.physik.uni-frankfurt.de/projekt/wiki/Allgemein/URL-Shortener). Ausführliche Informationen finden sich auch in den Dateien im [pages](https://github.com/PhysikOnline-FFM/gu-urlshorter/tree/master/pages)-Verzeichnis, etwa http://tinygu.de/infos, http://tinygu.de/credits sowie http://tinygu.de/specs.
 
+Um das Design nutzen zu können muss ein externes Package hinzugefügt werden:
+```
+git submodule init
+git submodule update
+```
+
 Mitmachen
 ---------
 
