@@ -191,6 +191,23 @@ function yourls_html_footer() {
 			</div>
 			<a href="http://www.uni-frankfurt.de/">Die Goethe-Universität Frankfurt am Main</a>
 		</section>
+        <!-- Piwik -->
+        <script type="text/javascript">
+          var _paq = _paq || [];
+          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+          _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+          _paq.push(["setCookieDomain", "*.tinygu.de"]);
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u="//vm.elearning.physik.uni-frankfurt.de/piwik/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', '4']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Piwik Code -->
 		&nbsp; <!-- place for more content -->
 
 		<?php yourls_do_action( 'html_footer', $ydb->context ); ?>
